@@ -15,10 +15,11 @@ Util = require 'util'
 module.exports = (robot) ->
   robot.hear /gateway status$/i, (msg) ->
     unless msg.message.data
-      msg.message.data = { room_id: 1 }
-    idobata_room_id =  msg.message.data.room_id
-    if robot.brain.data.idobata and robot.brain.data.idobata[idobata_room_id]
-      msg.send "room " + idobata_room_id + " is connected with `" + robot.brain.data.idobata[idobata_room_id] + "`"
+      msg.message.data = { room_id: "1" }
+    idobata_room_id = msg.message.data.room_id
+    idobata_rooms =  robot.brain.get 'idobata'
+    if idobata_rooms and idobata_rooms[idobata_room_id]
+      msg.send "room " + idobata_room_id + " is connected with `" + idobata_rooms[idobata_room_id] + "`"
     else
       msg.send "room " + idobata_room_id + " isn't connected with any room yet."
 
@@ -27,20 +28,19 @@ module.exports = (robot) ->
   robot.hear /assign gateway with ([^\s]+)$/i, (msg) ->
     if robot.auth.hasRole(msg.message.user,'admin')
       unless msg.message.data
-        msg.message.data = { room_id: 1 }
+        msg.message.data = { room_id: "1" }
       idobata_room_id =  msg.message.data.room_id
       lingr_room_id =  msg.match[1]
-      unless robot.brain.data.idobata
-        robot.brain.data.idobata = {}
-        robot.brain.save
-      unless robot.brain.data.lingr
-        robot.brain.data.lingr = {}
-        robot.brain.save
-      robot.brain.data.idobata.idobata_room_id = lingr_room_id
-      robot.brain.data.lingr.lingr_room_id = idobata_room_id
-      robot.brain.save
-      # msg.send robot.brain.data.hoge.hi
-      msg.send "Done.\nnow room `" + robot.brain.data.idobata.idobata_room_id + "` is connected with `" + robot.brain.data.lingr.lingr_room_id + "`"
+
+      idobata_rooms = if robot.brain.get('idobata') then robot.brain.get('idobata') else {}
+      lingr_rooms = if robot.brain.get('lingr') then robot.brain.get('lingr') else {}
+
+      idobata_rooms[idobata_room_id] = lingr_room_id
+      lingr_rooms[lingr_room_id] = idobata_room_id
+
+      robot.brain.set 'idobata', idobata_rooms
+      robot.brain.set 'lingr', lingr_rooms
+      msg.send "Done.\nnow room `" + robot.brain.get('lingr')[lingr_room_id] + "` is connected with `" + robot.brain.get('idobata')[idobata_room_id] + "`"
       # msg.send "Done.\nnow room `" + idobata_room_id + "` is connected with `" + lingr_room_id + "`"
 
     else
