@@ -10,7 +10,7 @@
 Request = require "request"
 
 module.exports = (robot) ->
-  robot.respond /(.+)$/i, (msg) ->
+  robot.hear /(.+)$/i, (msg) ->
     msg.send msg.match[1]
     # options = {
     #   uri: 'https://.herokuapp.com/'
