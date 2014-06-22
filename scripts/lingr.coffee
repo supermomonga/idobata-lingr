@@ -8,10 +8,20 @@
 #   hubot die - End hubot process
 
 Request = require "request"
+Crypto = require 'crypto'
+Util = require 'util'
 
 module.exports = (robot) ->
   robot.hear /(.+)$/i, (msg) ->
+    console.log msg.message
+    console.log msg.envelope
+    msg.send process.env.LINGR_BOT_SECRET
     msg.send msg.match[1]
+    # query =
+    #   room: 
+    # robot.http('http://lingr.com')
+    #   .path('/api/room/say')
+    #   .query(query)
     # options = {
     #   uri: 'https://.herokuapp.com/'
     # }
