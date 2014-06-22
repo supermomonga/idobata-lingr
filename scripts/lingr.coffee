@@ -6,17 +6,17 @@
 #   hubot echo <text> - Reply back with <text>
 #   hubot time - Reply with current time
 #   hubot die - End hubot process
-#   hubot assign gateway <idobata_room_id>=<lingr_room_id>
+#   hubot assign gateway with lingr <lingr_room_id>
 
 Request = require "request"
 Crypto = require 'crypto'
 Util = require 'util'
 
 module.exports = (robot) ->
-  robot.hear /assign gateway (\d+)=([^\s]+)$/i, (msg) ->
+  robot.hear /assign gateway with lingr:([^\s]+)$/i, (msg) ->
     if robot.auth.hasRole(msg.message.user,'admin')
-      idobata_room_id =  msg.match[1]
-      lingr_room_id =  msg.match[2]
+      idobata_room_id =  msg.data.room_id
+      lingr_room_id =  msg.match[1]
       unless robot.brain.data.idobata
         robot.brain.data.idobata = []
       unless robot.brain.data.lingr
