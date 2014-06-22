@@ -15,7 +15,7 @@ module.exports = (robot) ->
   robot.hear /(.+)$/i, (msg) ->
     console.log msg.message
     console.log msg.envelope
-    msg.send process.env.LINGR_BOT_SECRET
+    # msg.send process.env.LINGR_BOT_SECRET
     msg.send msg.match[1]
     # query =
     #   room: 
