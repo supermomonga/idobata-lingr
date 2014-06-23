@@ -41,24 +41,26 @@ module.exports = (robot) ->
       robot.brain.set 'idobata', idobata_rooms
       robot.brain.set 'lingr', lingr_rooms
       msg.send "Done.\nnow room `" + robot.brain.get('lingr')[lingr_room_id] + "` is connected with `" + robot.brain.get('idobata')[idobata_room_id] + "`"
-      # msg.send "Done.\nnow room `" + idobata_room_id + "` is connected with `" + lingr_room_id + "`"
 
     else
       msg.send 'Sorry, you have no authority to do that.'
-
-  robot.hear /list gateway$/i, (msg) ->
-      console.log "hi"
-      msg.send "hi"
 
   robot.hear /([\s\S]+)/, (msg) ->
     unless msg.message.data
       msg.message.data = { room_id: "1" }
     idobata_room_id =  msg.message.data.room_id
     idobata_rooms = if robot.brain.get('idobata') then robot.brain.get('idobata') else {}
+
+    idobata_last_speakers = if robot.brain.get('idobata-last-speakers') then robot.brain.get('idobata-last-speakers') else {}
+    idobata_last_speaker = if idobata_last_speakers[idobata_room_id] then idobata_last_speakers[idobata_room_id] else ''
+    idobata_last_speakers[idobata_room_id] = msg.message.user.id
+    robot.brain.set 'idobata-last-speakers', idobata_last_speakers
+
     bot_id = process.env.LINGR_BOT_ID
     bot_secret = process.env.LINGR_BOT_SECRET
     bot_verifier = Crypto.createHash('sha1').update(bot_id + bot_secret).digest('hex')
-    text = msg.message.user.name + ": " + msg.match[1]
+    text = if idobata_last_speaker == msg.message.user.name then '' else "<" + msg.message.user.name + ">\n"
+    text += msg.match[1]
     if idobata_rooms[idobata_room_id]
       query =
         room: idobata_rooms[idobata_room_id]
@@ -69,7 +71,7 @@ module.exports = (robot) ->
       .path('/api/room/say')
       .query(query)
       .get() (err, res, body) ->
-        console.log body
+        console.log "Posted to lingr"
 
   robot.router.post "/idobata/say", (req, res) ->
     message = req.body.events[0].message
@@ -77,6 +79,7 @@ module.exports = (robot) ->
     name = message.nickname
     text = message.text
     icon_url = message.icon_url
+    idobata_room_last_speakers = if robot.brain.get('idobata-last-speakers') then robot.brain.get('idobata-last-speakers') else {}
 
     res_body = "<" + name + ">\n" + text
 
