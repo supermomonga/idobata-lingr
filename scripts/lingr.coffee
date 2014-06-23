@@ -62,7 +62,7 @@ module.exports = (robot) ->
     bot_id = process.env.LINGR_BOT_ID
     bot_secret = process.env.LINGR_BOT_SECRET
     bot_verifier = Crypto.createHash('sha1').update(bot_id + bot_secret).digest('hex')
-    text = if idobata_last_speaker == msg.message.user.id then '' else "<" + msg.message.user.name + ">\n"
+    text = if idobata_last_speaker == msg.message.user.id then '' else msg.message.user.name + ":\n"
     text += msg.match[1]
     if idobata_rooms[idobata_room_id]
       query =
@@ -97,7 +97,7 @@ module.exports = (robot) ->
       idobata_last_speakers[lingr_rooms[lingr_room_id]] = ''
       robot.brain.set 'idobata-last-speakers', idobata_last_speakers
 
-    res_body = if lingr_last_speaker == speaker_id then '' else "<" + name + ">\n"
+    res_body = if lingr_last_speaker == speaker_id then '' else name + ":\n"
     res_body += text
 
 
