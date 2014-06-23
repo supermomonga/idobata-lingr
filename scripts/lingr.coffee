@@ -62,7 +62,7 @@ module.exports = (robot) ->
         room: idobata_rooms[idobata_room_id]
         bot: bot_id
         text: msg.match[1]
-        bot_berifier: Crypto.createHash('sha1').update(bot_id + bot_secret)
+        bot_berifier: Crypto.createHash('sha1').update(bot_id + bot_secret).digest('hex')
     robot.http('http://lingr.com')
       .path('/api/room/say')
       .query(query)
