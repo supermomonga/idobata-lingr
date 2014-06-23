@@ -78,7 +78,7 @@ module.exports = (robot) ->
     text = message.text
     icon_url = message.icon_url
 
-    res_body = name + ": " + text
+    res_body = "<" + name + ">\n" + text
 
     # Detect room
     lingr_rooms = if robot.brain.get('lingr') then robot.brain.get('lingr') else {}
