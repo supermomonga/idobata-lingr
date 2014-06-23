@@ -24,7 +24,7 @@ module.exports = (robot) ->
 
 
 
-  robot.hear /assign gateway with ([^\s]+)$/i, (msg) ->
+  robot.hear /assign gateway with (^\S+)$/i, (msg) ->
     if robot.auth.hasRole(msg.message.user,'admin')
       unless msg.message.data
         msg.message.data = { room_id: "1" }
