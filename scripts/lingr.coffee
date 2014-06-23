@@ -70,10 +70,23 @@ module.exports = (robot) ->
       .query(query)
       .get() (err, res, body) ->
         console.log body
-    # options = {
-    #   uri: 'https://.herokuapp.com/'
-    # }
-    # Request.post
+
+  robot.router.post "/idobata/say", (req, res) ->
+    message = req.body.events[0].message
+    lingr_room_id = message.room
+    name = message.nickname
+    text = message.text
+    icon_url = message.icon_url
+
+    res_body = name + ": " + text
+
+    # Detect room
+    lingr_rooms = if robot.brain.get('lingr') then robot.brain.get('lingr') else {}
+
+    if lingr_rooms[lingr_room_id]
+      console.log "Relay to " + lingr_rooms[lingr_room_id]
+      robot.messageRoom lingr_rooms[lingr_room_id], res_body
+
 
   # robot.respond /ADAPTER$/i, (msg) ->
   #   msg.send robot.adapterName
@@ -87,4 +100,9 @@ module.exports = (robot) ->
   # robot.respond /DIE$/i, (msg) ->
   #   msg.send "Goodbye, cruel world."
   #   process.exit 0
+
+
+
+
+
 
