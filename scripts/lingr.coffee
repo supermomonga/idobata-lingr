@@ -50,7 +50,7 @@ module.exports = (robot) ->
       console.log "hi"
       msg.send "hi"
 
-  robot.hear /(.+)/m, (msg) ->
+  robot.hear /([\s\S]+)/, (msg) ->
     unless msg.message.data
       msg.message.data = { room_id: "1" }
     idobata_room_id =  msg.message.data.room_id
