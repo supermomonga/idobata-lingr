@@ -101,7 +101,6 @@ module.exports = (robot) ->
 
     res_body = if lingr_last_speaker == speaker_id then '' else "<" + name + ">\n"
     res_body += text
-    console.log res_body
 
 
     if lingr_rooms[lingr_room_id]
