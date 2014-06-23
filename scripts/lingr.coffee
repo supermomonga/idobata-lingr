@@ -25,24 +25,23 @@ module.exports = (robot) ->
 
 
   robot.hear /assign gateway with (^\S+)$/i, (msg) ->
-    if robot.auth.hasRole(msg.message.user,'admin')
-      unless msg.message.data
-        msg.message.data = { room_id: "1" }
-      idobata_room_id =  msg.message.data.room_id
-      lingr_room_id =  msg.match[1]
-
-      idobata_rooms = robot.brain.get('idobata') or {}
-      lingr_rooms = robot.brain.get('lingr') or {}
-
-      idobata_rooms[idobata_room_id] = lingr_room_id
-      lingr_rooms[lingr_room_id] = idobata_room_id
-
-      robot.brain.set 'idobata', idobata_rooms
-      robot.brain.set 'lingr', lingr_rooms
-      msg.send "Done.\nnow room `" + robot.brain.get('lingr')[lingr_room_id] + "` is connected with `" + robot.brain.get('idobata')[idobata_room_id] + "`"
-
-    else
+    unless robot.auth.hasRole(msg.message.user,'admin')
       msg.send 'Sorry, you have no authority to do that.'
+      return
+    unless msg.message.data
+      msg.message.data = { room_id: "1" }
+    idobata_room_id =  msg.message.data.room_id
+    lingr_room_id =  msg.match[1]
+
+    idobata_rooms = robot.brain.get('idobata') or {}
+    lingr_rooms = robot.brain.get('lingr') or {}
+
+    idobata_rooms[idobata_room_id] = lingr_room_id
+    lingr_rooms[lingr_room_id] = idobata_room_id
+
+    robot.brain.set 'idobata', idobata_rooms
+    robot.brain.set 'lingr', lingr_rooms
+    msg.send "Done.\nnow room `" + robot.brain.get('lingr')[lingr_room_id] + "` is connected with `" + robot.brain.get('idobata')[idobata_room_id] + "`"
 
   robot.hear /([\s\S]+)/, (msg) ->
     unless msg.message.data
