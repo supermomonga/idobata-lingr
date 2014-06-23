@@ -14,8 +14,7 @@ Util = require 'util'
 
 module.exports = (robot) ->
   robot.hear /gateway status$/i, (msg) ->
-    unless msg.message.data
-      msg.message.data = { room_id: "1" }
+    msg.message.data ||= { room_id: "1" }
     idobata_room_id = msg.message.data.room_id
     idobata_rooms =  robot.brain.get 'idobata'
     if idobata_rooms and idobata_rooms[idobata_room_id]
