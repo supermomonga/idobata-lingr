@@ -73,7 +73,6 @@ module.exports = (robot) ->
 
   robot.router.post "/idobata/say", (req, res) ->
     message = req.body.events[0].message
-    console.log message
     lingr_room_id = message.room
     name = message.nickname
     text = message.text
@@ -83,25 +82,11 @@ module.exports = (robot) ->
 
     # Detect room
     lingr_rooms = if robot.brain.get('lingr') then robot.brain.get('lingr') else {}
-    console.log lingr_rooms
 
     if lingr_rooms[lingr_room_id]
-      console.log "Relay to " + lingr_rooms[lingr_room_id]
       robot.messageRoom lingr_rooms[lingr_room_id], res_body
 
 
-  # robot.respond /ADAPTER$/i, (msg) ->
-  #   msg.send robot.adapterName
-  #
-  # robot.respond /ECHO (.*)$/i, (msg) ->
-  #   msg.send msg.match[1]
-  #
-  # robot.respond /TIME$/i, (msg) ->
-  #   msg.send "Server time is: #{new Date()}"
-  #
-  # robot.respond /DIE$/i, (msg) ->
-  #   msg.send "Goodbye, cruel world."
-  #   process.exit 0
 
 
 
