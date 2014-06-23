@@ -51,15 +51,23 @@ module.exports = (robot) ->
       msg.send "hi"
 
   robot.hear /(.+)$/i, (msg) ->
-    # console.log msg.message
-    # console.log msg.envelope
-    # msg.send process.env.LINGR_BOT_SECRET
-    # msg.send msg.match[1]
-    # query =
-    #   room: 
-    # robot.http('http://lingr.com')
-    #   .path('/api/room/say')
-    #   .query(query)
+    unless msg.message.data
+      msg.message.data = { room_id: "1" }
+    idobata_room_id =  msg.message.data.room_id
+    idobata_rooms = if robot.brain.get('idobata') then robot.brain.get('idobata') else {}
+    bot_id = process.env.LINGR_BOT_ID
+    bot_secret = process.env.LINGR_BOT_SECRET
+    if idobata_rooms[idobata_room_id]
+      query =
+        room: idobata_rooms[idobata_room_id]
+        bot: bot_id
+        text: msg.match[1]
+        bot_berifier: Crypto.createHash('sha1').update(bot_id + bot_secret)
+    robot.http('http://lingr.com')
+      .path('/api/room/say')
+      .query(query)
+      .get() (err, res, body) ->
+        console.log body
     # options = {
     #   uri: 'https://.herokuapp.com/'
     # }
