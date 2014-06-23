@@ -54,7 +54,7 @@ module.exports = (robot) ->
     idobata_last_speakers[idobata_room_id] = msg.message.user.id
     robot.brain.set 'idobata-last-speakers', idobata_last_speakers
 
-    lingr_last_speakers = if robot.brain.get('lingr-last-speakers') then robot.brain.get('lingr-last-speakers') else {}
+    lingr_last_speakers = robot.brain.get('lingr-last-speakers') or {}
     if idobata_rooms[idobata_room_id]
       lingr_last_speakers[idobata_rooms[idobata_room_id]] = ''
       robot.brain.set 'lingr-last-speakers', lingr_last_speakers
@@ -87,12 +87,12 @@ module.exports = (robot) ->
     # Detect room
     lingr_rooms = if robot.brain.get('lingr') then robot.brain.get('lingr') else {}
 
-    lingr_last_speakers = if robot.brain.get('lingr-last-speakers') then robot.brain.get('lingr-last-speakers') else {}
-    lingr_last_speaker = if lingr_last_speakers[lingr_room_id] then lingr_last_speakers[lingr_room_id] else ''
+    lingr_last_speakers = robot.brain.get('lingr-last-speakers') or {}
+    lingr_last_speaker = lingr_last_speakers[lingr_room_id] or ''
     lingr_last_speakers[lingr_room_id] = speaker_id
     robot.brain.set 'lingr-last-speakers', lingr_last_speakers
 
-    idobata_last_speakers = if robot.brain.get('idobata-last-speakers') then robot.brain.get('idobata-last-speakers') else {}
+    idobata_last_speakers = robot.brain.get('idobata-last-speakers') or {}
     if lingr_rooms[lingr_room_id]
       idobata_last_speakers[lingr_rooms[lingr_room_id]] = ''
       robot.brain.set 'idobata-last-speakers', idobata_last_speakers
