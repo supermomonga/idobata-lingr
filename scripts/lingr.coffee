@@ -88,6 +88,7 @@ module.exports = (robot) ->
 
     if lingr_rooms[lingr_room_id]
       robot.messageRoom lingr_rooms[lingr_room_id], res_body
+    res.end ''
 
 
 
