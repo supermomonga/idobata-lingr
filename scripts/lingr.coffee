@@ -31,8 +31,8 @@ module.exports = (robot) ->
       idobata_room_id =  msg.message.data.room_id
       lingr_room_id =  msg.match[1]
 
-      idobata_rooms = if robot.brain.get('idobata') then robot.brain.get('idobata') else {}
-      lingr_rooms = if robot.brain.get('lingr') then robot.brain.get('lingr') else {}
+      idobata_rooms = robot.brain.get('idobata') or {}
+      lingr_rooms = robot.brain.get('lingr') or {}
 
       idobata_rooms[idobata_room_id] = lingr_room_id
       lingr_rooms[lingr_room_id] = idobata_room_id
